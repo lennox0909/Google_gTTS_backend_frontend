@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gtts_backend
+    ports:
+      - "8081:8081"
+    networks:
+      - gtts
+    volumes:
+      - ./voice_output:/app/voice_output
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gtts_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - gtts
+
+networks:
+  gtts:
+    driver: bridge

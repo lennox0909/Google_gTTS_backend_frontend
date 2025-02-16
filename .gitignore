@@ -1,0 +1,39 @@
+# Node.js 相關忽略項
+node_modules/
+.next/
+npm-debug.log
+yarn-error.log
+
+# Golang 相關忽略項
+bin/
+build/
+*.exe
+*.out
+*.log
+gocache/
+coverage.out
+.cache/
+
+# Python 相關忽略項（因 gTTS 需要）
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Docker 相關忽略項
+docker-compose.override.yml
+
+# IDE / 編輯器 設定
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# 語音輸出資料夾
+voice_output/
