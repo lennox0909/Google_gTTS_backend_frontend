@@ -20,6 +20,7 @@ project_root/
 │── docker-compose.yml  # Docker Compose 配置
 │── README.md         # 專案說明文件
 ```
+![docker compose](https://github.com/lennox0909/Google_gTTS_backend_frontend/blob/main/image/docker-compose.png?raw=true)
 
 ## 🚀 如何運行
 ### 1️⃣ **安裝 Docker & Docker Compose**
@@ -28,7 +29,7 @@ project_root/
 ### 2️⃣ **啟動專案**
 在專案根目錄執行以下指令，建立並啟動後端與前端：
 ```sh
-docker-compose up --build
+docker compose up -d
 ```
 此命令將會：
 - **構建後端 (Golang)** 並安裝 gTTS、ffmpeg
@@ -54,13 +55,13 @@ docker-compose up --build
 ```json
 {
   "message": "Speech generated",
-  "file": "voice_output/output.mp3"
+  "file": "voice_output/filename.mp3"
 }
 ```
 
 ### **2️⃣ 下載語音檔案**
-- **API 路徑**：`GET /download?file=voice_output/output.mp3`
-- **下載語音檔案** 直接開啟 `output.mp3` 進行播放。
+- **API 路徑**：`GET /download?file=voice_output/filename.mp3`
+- **下載語音檔案** 直接開啟 `filename.mp3` 進行播放。
 
 ## 🛠️ 開發與測試
 ### **本地開發**
