@@ -3,6 +3,14 @@
 ## 📌 專案簡介
 本專案是一個基於 **Google gTTS** 的 **文字轉語音** 應用，後端使用 **Golang**，前端使用 **Next.js (TypeScript)**，並通過 **Docker** 進行容器化部署。
 
+## gTTS 並不是 Google 官方正式提供的 API
+Google 會偵測異常流量，如果你的 IP 或帳號在短時間內發送大量請求（例如：
+- 批量轉換大量文字為語音
+- 太頻繁地呼叫 gtts
+- 多個 IP 來自相同的來源
+
+Google 可能會啟動自動防禦機制（Rate Limiting），導致請求被封鎖或返回錯誤。
+
 ## 📂 專案結構
 ```
 project_root/
