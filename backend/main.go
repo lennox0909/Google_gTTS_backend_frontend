@@ -7,6 +7,7 @@ import (
     "os"
     "os/exec"
     "path/filepath"
+    "strings"
     "github.com/rs/cors"
 )
 
@@ -15,6 +16,18 @@ type TTSRequest struct {
     Language string  `json:"language"`
     Speed    float64 `json:"speed"`
     Voice    string  `json:"voice"`
+}
+
+func sanitizeFilename(text string) string {
+    text = strings.TrimSpace(text)
+    if len(text) > 10 {
+        text = text[:10] // 限制檔名長度
+    }
+    text = strings.ReplaceAll(text, " ", "_") // 取代空格為底線
+    text = strings.ReplaceAll(text, "?", "") // 移除非法字符
+    text = strings.ReplaceAll(text, "!", "")
+    text = strings.ReplaceAll(text, "/", "")
+    return text
 }
 
 func textToSpeechHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +39,7 @@ func textToSpeechHandler(w http.ResponseWriter, r *http.Request) {
     }
     defer r.Body.Close()
 
-    // 確保專案根目錄下的 voice_output 資料夾存在
+    // 確保 voice_output 資料夾存在
     outputDir := "./voice_output"
     if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
         http.Error(w, "Failed to create voice_output directory", http.StatusInternalServerError)
@@ -34,11 +47,12 @@ func textToSpeechHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     // 生成音檔名
-    originalFile := filepath.Join(outputDir, "output.mp3")
-    processedFile := filepath.Join(outputDir, "output_processed.mp3")
+    filePrefix := sanitizeFilename(req.Text)
+    fileName := fmt.Sprintf("%s_%.1fx.mp3", filePrefix, req.Speed)
+    filePath := filepath.Join(outputDir, fileName)
 
     // 使用 gTTS 生成音檔
-    cmd := exec.Command("gtts-cli", req.Text, "--lang", req.Language, "--output", originalFile)
+    cmd := exec.Command("gtts-cli", req.Text, "--lang", req.Language, "--output", filePath)
     if req.Speed == 0.5 {
         cmd.Args = append(cmd.Args, "--slow")
     }
@@ -48,19 +62,8 @@ func textToSpeechHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // 調整音檔播放速度
-    if req.Speed != 1 {
-        cmd = exec.Command("ffmpeg", "-i", originalFile, "-filter:a", fmt.Sprintf("atempo=%.1f", req.Speed), "-y", processedFile)
-        if err := cmd.Run(); err != nil {
-            http.Error(w, "Failed to process audio speed", http.StatusInternalServerError)
-            return
-        }
-    } else {
-        processedFile = originalFile
-    }
-
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{"message": "Speech generated", "file": processedFile})
+    json.NewEncoder(w).Encode(map[string]string{"message": "Speech generated", "file": filePath})
 }
 
 func downloadHandler(w http.ResponseWriter, r *http.Request) {

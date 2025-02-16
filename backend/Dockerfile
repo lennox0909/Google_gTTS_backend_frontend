@@ -21,5 +21,8 @@ RUN go build -o main .
 # 建立 voice_output 資料夾
 RUN mkdir -p /app/voice_output && chmod -R 777 /app/voice_output
 
+# 確保 voice_output 目錄為可存取狀態
+VOLUME /app/voice_output
+
 # 啟動應用
 CMD ["/app/main"]
