@@ -18,11 +18,11 @@ RUN apt-get update && apt-get install -y python3 python3-pip ffmpeg && \
 # 編譯應用程式
 RUN go build -o main .
 
-# 建立 voice_output 資料夾並確保權限
+# 建立 voice_output 資料夾
 RUN mkdir -p /app/voice_output && chmod -R 777 /app/voice_output
 
-# 確保 ffmpeg 可用
-RUN ffmpeg -version
+# 確保 voice_output 目錄為可存取狀態
+VOLUME /app/voice_output
 
 # 啟動應用
 CMD ["/app/main"]
